@@ -1,20 +1,53 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Lista de Au Pairs</title>
-</head>
-<body>
-    <h1>Perfiles de Au Pairs</h1>
-    <ul>
-        {% for aupair in aupairs %}
-            <li>{{ aupair.nombre }} {{ aupair.apellido }} - {{ aupair.pais_origen }} - {{ aupair.edad }} años</li>
-        {% endfor %}
-    </ul>
-</body>
-</html>
+{% extends 'base.html' %}
 
-<form method="post" action="{% url 'logout' %}">
-    {% csrf_token %}
-    <button type="submit">Cerrar sesión</button>
-</form>
+{% block titulo %}Lista de Au Pairs{% endblock %}
+
+{% block contenido %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Perfiles de Au Pairs</h1>
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-danger btn-sm">Cerrar sesión</button>
+    </form>
+</div>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-primary">
+                <tr>
+                    <th>#</th>
+                    <th>Nombre</th>
+                    <th>Edad</th>
+                    <th>País</th>
+                    <th>Idiomas</th>
+                    <th>Contacto</th>
+                    <th>Experiencia</th>
+                    <th>Registro</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for aupair in aupairs %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ aupair.nombre }} {{ aupair.apellido }}</td>
+                    <td>{{ aupair.edad }}</td>
+                    <td>{{ aupair.pais_origen }}</td>
+                    <td>{{ aupair.idiomas }}</td>
+                    <td>
+                        <a href="mailto:{{ aupair.email }}">{{ aupair.email }}</a><br>
+                        <small class="text-muted">{{ aupair.telefono }}</small>
+                    </td>
+                    <td>{{ aupair.experiencia|truncatechars:60|default:"—" }}</td>
+                    <td>{{ aupair.fecha_registro|date:"d/m/Y" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center text-muted">Todavía no hay au pairs registradas.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
